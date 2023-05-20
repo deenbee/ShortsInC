@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <windows.h>
+#include <mmsystem.h>
+
+void reproducirNota(HMIDIOUT midiOut, int channel, int note, int velocity, int duration) {
+    DWORD message = 0x90 | (channel & 0xF);
+    message |= ((DWORD)note << 8) & 0xFF00;
+    message |= ((DWORD)velocity << 16) & 0xFF0000;
+    midiOutShortMsg(midiOut, message);
+    Sleep(duration);
+    message = 0x80 | (channel & 0xF);
+    message |= ((DWORD)note << 8) & 0xFF00;
+    message |= ((DWORD)velocity << 16) & 0xFF0000;
+    midiOutShortMsg(midiOut, message);
+}
+
+void mostrarNota(int note) {
+    char* notas[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    int octava = (note / 12) - 1;
+    int indice = note % 12;
+    printf("\33[31mShorts in C:\033[0mNote: %s%d\n", notas[indice], octava);
+}
+
+int main() {
+    HMIDIOUT midiOut;
+    midiOutOpen(&midiOut, 0, 0, 0, CALLBACK_NULL);
+
+    int tempo = 500; // Tempo en BPM
+    int duration = 60000 / tempo; // Duración de cada nota en milisegundos
+    int velocity = 100; // Velocidad de las notas
+	int repeticion=0;
+	
+    // Definir la melodía 
+    int melody[] = {
+        91, 71, 47, 74, 
+    };
+
+	
+    int melody2[] = {
+        41, 31, 47, 44, 
+    };
+
+	int melody3[] = {
+        81, 91, 90, 89, 
+    };
+
+
+	int melody4[] = {
+        88, 87, 86, 85, 
+    };
+
+
+    int numNotes = sizeof(melody) / sizeof(melody[0]);
+
+    // Reproducir y mostrar las notas en la terminal
+    
+	while (repeticion<32){
+	
+	for (int i = 0; i < numNotes; i++) {
+        reproducirNota(midiOut, 0, melody[i], velocity, duration);
+        mostrarNota(melody[i]);
+        Sleep(duration);
+   	system ("cls");
+    }
+    
+	
+
+	
+	for (int i = 0; i < numNotes; i++) {
+        reproducirNota(midiOut, 0, melody2[i], velocity, duration);
+        mostrarNota(melody2[i]);
+        Sleep(duration);
+    
+    }
+	printf ("\033[32mSubscribe on YouTube\033[0m\n");
+	for (int i = 0; i < numNotes; i++) {
+        reproducirNota(midiOut, 0, melody3[i], velocity, duration);
+        mostrarNota(melody3[i]);
+        Sleep(duration);
+   
+    }
+	printf ("\033[33mSubscribe on YouTube\033[0m\n");
+	for (int i = 0; i < numNotes; i++) {
+        reproducirNota(midiOut, 0, melody4[i], velocity, duration);
+        mostrarNota(melody4[i]);
+        Sleep(duration);
+   
+    }
+	
+	repeticion++;
+	
+	
+	
+	}
+	    midiOutClose(midiOut);
+
+
+
+
+    return 0;
+}
+
